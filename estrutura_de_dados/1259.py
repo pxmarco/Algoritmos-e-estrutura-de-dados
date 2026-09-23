@@ -3,16 +3,16 @@ pares = []
 impares = []
 
 for _ in range(n):
-    valor = int(input())
-    if valor % 2 == 0:
-        pares.append(valor)
+    numero = int(input())
+    if numero % 2 == 0:
+        pares.append(numero)
     else:
-        impares.append(valor)
+        impares.append(numero)
 
 pares.sort()
 impares.sort(reverse=True)
 
-for v in pares:
-    print(v)
-for v in impares:
-    print(v)
+for numero in pares:
+    print(numero)
+for numero in impares:
+    print(numero)

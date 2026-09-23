@@ -1,35 +1,52 @@
 while True:
-    X, Y, P = map(int, input().split())
-
-    if X == 0 and Y == 0 and P == 0:
+    X, Y, preco = map(int, input().split())
+    if X == 0 and Y == 0 and preco == 0:
         break
-
     Q = int(input())
 
-    campo = [[0] * Y for _ in range(X)]
+    bit = [[0] * (Y + 2) for _ in range(X + 2)]
+    def atualizar(x, y, valor):
+        x += 1
+        y += 1
+        while x <= X + 1:
+            yy = y
+            while yy <= Y + 1:
+                bit[x][yy] += valor
+                yy += yy & -yy
+            x += x & -x
+    def consultar(x, y):
+        x += 1
+        y += 1
+        resultado = 0
+        while x > 0:
+            yy = y
+            while yy > 0:
+                resultado += bit[x][yy]
+                yy -= yy & -yy
+            x -= x & -x
 
-    saida = []
-
+        return resultado
+    def retangulo(x1, y1, x2, y2):
+        return (
+            consultar(x2, y2) 
+            - consultar(x1 - 1, y2) 
+            - consultar(x2, y1 - 1) 
+            + consultar(x1 - 1, y1 - 1)
+        )
     for _ in range(Q):
-        partes = input().split()
+        dados = input().split()
+        if dados[0] == 'A':
+            n = int(dados[1])
+            m = int(dados[2])
+            y = int(dados[3])
 
-        if partes[0] == "A":
-            N, Xc, Yc = int(partes[1]), int(partes[2]), int(partes[3])
-            campo[Xc][Yc] += N
+            atualizar(n, m, y)
         else:
-            X1, Y1, X2, Y2 = int(partes[1]), int(partes[2]), int(partes[3]), int(partes[4])
+            x1 = int(dados[1])
+            y1 = int(dados[2])
+            x2 = int(dados[3])
+            y2 = int(dados[4])
 
-            if X1 > X2:
-                X1, X2 = X2, X1
-            if Y1 > Y2:
-                Y1, Y2 = Y2, Y1
-
-            total = 0
-            for x in range(X1, X2 + 1):
-                for y in range(Y1, Y2 + 1):
-                    total += campo[x][y]
-
-            saida.append(str(total * P))
-
-    print("\n".join(saida))
+            quantidade = retangulo(x1, y1, x2, y2)
+            print(quantidade * preco)
     print()

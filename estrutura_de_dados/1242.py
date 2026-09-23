@@ -1,41 +1,36 @@
-import sys
+def pode_ligar(a, b):
+    return (a == 'B' and b == 'S') or \
+           (a == 'S' and b == 'B') or \
+           (a == 'C' and b == 'F') or \
+           (a == 'F' and b == 'C')
+
 
 def par(a, b):
-    return (a, b) in {("B","S"), ("S","B"), ("C","F"), ("F","C")}
+    return pode_ligar(a, b)
 
-def resolver(fita):
+
+while True:
+    try:
+        fita = input().strip()
+    except EOFError:
+        break   
     n = len(fita)
-    memo = {}
+    dp = [[0] * n for _ in range(n)]
+    for tamanho in range(2, n + 1, 2):
+        for i in range(n - tamanho + 1):
+            j = i + tamanho - 1
 
-    def full(i, j):
-        if i > j:
-            return True
-        if (j - i + 1) % 2 != 0:
-            return False
-        if (i, j) in memo:
-            return memo[(i, j)]
-        res = False
-        k = i + 1
-        while k <= j:
-            if par(fita[i], fita[k]) and full(i + 1, k - 1) and full(k + 1, j):
-                res = True
-                break
-            k += 2
-        memo[(i, j)] = res
-        return res
+            melhor = dp[i + 1][j]
+            for k in range(i + 1, j + 1):
+                if pode_ligar(fita[i], fita[k]):
 
-    dp = [0] * (n + 1)
-    for i in range(1, n + 1):
-        dp[i] = dp[i - 1]
-        for j in range(0, i):
-            comprimento = i - j
-            if comprimento % 2 == 0 and full(j, i - 1):
-                if dp[j] + comprimento // 2 > dp[i]:
-                    dp[i] = dp[j] + comprimento // 2
-    return dp[n]
-
-for linha in sys.stdin:
-    fita = linha.strip()
-    if not fita:
-        continue
-    print(resolver(fita))
+                    esquerda = 0
+                    direita = 0
+                    if i + 1 <= k - 1:
+                        esquerda = dp[i + 1][k - 1]
+                    if k + 1 <= j:
+                        direita = dp[k + 1][j]
+                    total = 1 + esquerda + direita
+                    melhor = max(melhor, total)
+            dp[i][j] = melhor
+    print(dp[0][n - 1])

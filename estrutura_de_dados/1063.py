@@ -7,19 +7,27 @@ while True:
     destino = input().split()
 
     pilha = []
-    operacoes = []
-    posicao = 0
+    movimentos = []
+    pos_entrada = 0
+    pos_saida = 0
+    while pos_saida < n:
 
-    for vagao in entrada:
-        pilha.append(vagao)
-        operacoes.append("I")
-
-        while pilha and posicao < n and pilha[-1] == destino[posicao]:
+        if pos_entrada < n:
+            pilha.append(entrada[pos_entrada])
+            movimentos.append("I")
+            pos_entrada += 1
+        while (
+            pilha
+            and pos_saida < n
+            and pilha[-1] == destino[pos_saida]):
             pilha.pop()
-            operacoes.append("R")
-            posicao += 1
-
-    if posicao == n and not pilha:
-        print("".join(operacoes))
+            movimentos.append("R")
+            pos_saida += 1
+        if pos_entrada == n:
+            if pos_saida < n and (
+                not pilha or pilha[-1] != destino[pos_saida]):
+                break
+    if pos_saida == n:
+        print("".join(movimentos))
     else:
-        print("".join(operacoes) + " Impossible")
+        print("Impossible")
